@@ -1,0 +1,45 @@
+//默认版本2
+syntax = "proto3";
+
+//protoc --go_out=./ pb.proto   执行
+//指定所在包
+package protobuf;
+option go_package = "./grpc_pb";
+
+//添加rpc服务
+//编译服务需要使用grpc
+//protoc --go_out=plugins=grpc:./ pb.proto
+service ser {
+  rpc Say(Student) returns (Student);
+}
+
+//定义信息体
+message Student {
+  int32 id = 1;  //可以从1开始，不能重复
+  string name = 2;
+  People p = 3;
+
+  repeated int32 score = 4; //数组
+
+  sex s = 5;
+
+  //联合体
+  oneof data {
+    string address = 6;
+    string ip = 7;
+  }
+
+  message Number{
+    string number = 1;
+    int32 type = 2;
+  }
+
+}
+
+message People {
+  int32 weight = 1;
+}
+enum sex {
+  MAN=0; //枚举值必须从0开始
+  WOMAN =1;
+}

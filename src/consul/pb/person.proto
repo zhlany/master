@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package grpc_demo;
+option go_package = "./pb";
+
+message Person {
+  string name = 1;
+  int32 age = 2;
+}
+
+service SayName{
+  rpc SayHello(Person) returns (Person);
+}
