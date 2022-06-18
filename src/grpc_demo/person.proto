@@ -4,7 +4,7 @@ package grpc_demo;
 option go_package = "./pb";
 
 message Teacher {
-  int32 id = 1;
+  int32 id = 1 [(gogoproto.jsontag)="ID,omtempty"];
   string name = 2;
 }
 

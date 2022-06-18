@@ -1,0 +1,5 @@
+type Query {
+    findAll: [StudentList]!
+
+    todos: [Todo!]!
+}

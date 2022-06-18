@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"test_Project/src/grpc_demo/pb"
 
@@ -25,4 +26,6 @@ func main() {
 	//调用远程服务
 	t, err := grpcClient.SayHello(context.TODO(), &teacher)
 	fmt.Println(t, err)
+	tt, _ := json.Marshal(teacher)
+	fmt.Println(string(tt))
 }

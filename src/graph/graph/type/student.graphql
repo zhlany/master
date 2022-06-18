@@ -1,0 +1,5 @@
+type StudentList {
+    id: Int!
+    name:String!
+    sex:sex!
+}

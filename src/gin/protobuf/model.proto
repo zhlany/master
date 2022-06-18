@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+//protoc --go_out=./ model.proto   执行
+//指定所在包
+package protobuf;
+option go_package = "../app/model";
+
+enum Sex {
+  UNKNOWN=0;
+  MAN=1;
+  WOMAN=2;
+}
+
+message Student{
+  string uuid = 1;
+  string phone = 2;
+  string salt = 3;
+  string codePwd = 4;
+  string name = 5;
+  Sex sex = 6;
+  string uptime = 7;
+  string text = 8;
+
+}
+message uptime {
+  string uuid = 1;
+  string uptime = 2;
+}
+
+service Requestor {
+
+}

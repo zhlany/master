@@ -1,0 +1,5 @@
+input studentinput {
+    id: Int!
+    name: String!
+    sex: sex!
+}
