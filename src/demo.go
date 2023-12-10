@@ -37,6 +37,15 @@ func randFloat() float64 {
 	return rand.Float64() + float64(rand.Intn(99))
 }
 
+type data struct {
+	k *int
+	v *string
+}
+
+func setF(c interface{}) {
+
+}
+
 func main() {
 	/*	options := &password.Options{
 			SaltLen:      10,      //salt的长度
