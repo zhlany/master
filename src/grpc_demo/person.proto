@@ -10,4 +10,16 @@ message Teacher {
 
 service SayName{
   rpc SayHello(Teacher) returns (Teacher);
+}// 此消息定义了一个教师，包括一个ID和一个名字
+message Teacher {
+   // 教师的ID是一个整数，用作JSON中的标签
+   int32 id = 1 [(gogoproto.jsontag)="ID,omtempty"];
+   // 教师的名字是一个字符串
+   string name = 2;
+}
+
+// 此服务定义了一个方法，向教师问好
+service SayName{
+   // SayHello方法接受一个Teacher消息作为输入并返回一个Teacher消息
+   rpc SayHello(Teacher) returns (Teacher);
 }
