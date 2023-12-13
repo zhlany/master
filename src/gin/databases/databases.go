@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var Db *gorm.DB
+var DB *gorm.DB
 
 type MysqlConfig struct {
 	Mysql ConfigDetail `yaml:"mysql"`
@@ -30,6 +30,7 @@ type ConfigDetail struct {
 	Url      string `yaml:"-"`
 }
 
+// InitDB 初始化数据库连接
 func InitDB(configs *MysqlConfig) error {
 	config := configs.Mysql
 	var err error
@@ -53,7 +54,7 @@ func InitDB(configs *MysqlConfig) error {
 	//启用自动迁移模式 --可以保持mysql表更新到最新
 	db.AutoMigrate(&model.Student{}, &model.Uptime{})
 
-	Db = db
+	DB = db
 
 	return nil
 }

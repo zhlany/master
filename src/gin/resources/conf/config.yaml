@@ -2,7 +2,7 @@ mysql:
   user: "root"
   password: "root"
   host: "127.0.0.1"
-  port: 8080
+  port: 3306
   database: "gotest"
   maxIdle: 1000
   maxOpen: 100000

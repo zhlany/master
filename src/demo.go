@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
-	"strconv"
-	"strings"
 	"sync"
 	"time"
 )
@@ -14,20 +12,20 @@ import (
 //通过随机生成数和密码进行组合
 //数据库同时存储MD5值和salt值，验证使用正确的salt的值进行MD5即可
 
-//随机字符串
+// randString 生成一个长度为 l 的随机字符串
 func randString(l int) string {
-	str := "0123456789abcdefghigklmnopqrstuvwxyz"
-	strList := []byte(str)
-
-	result := []byte{}
-	i := 0
-
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	for i < l {
-		new := strList[r.Intn(len(strList))]
-		result = append(result, new)
-		i = i + 1
+	// 定义随机字符串的字符集
+	charset := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	// 创建一个新的随机数生成器，使用当前时间作为随机数种子
+	seededRand := rand.New(rand.NewSource(time.Now().UnixNano()))
+	// 初始化结果切片为指定长度
+	result := make([]byte, l)
+	// 遍历结果切片中的每个字符位置
+	for i := range result {
+		// 在 charset 中生成一个随机索引，并将对应的字符添加到结果切片中
+		result[i] = charset[seededRand.Intn(len(charset))]
 	}
+	// 将结果切片转换为字符串并返回
 	return string(result)
 }
 func randInt() int {
@@ -130,119 +128,31 @@ func main() {
 }
 
 func GetMapValueToString(m map[string]interface{}, key string) string {
-	dataType, _ := json.Marshal(m)
-	dataString := string(dataType)
-	//json转string
-	//去掉 { } , : " 等符号，只保留键值连在一起的字符串
-	stringReplace := []string{"{", "}", ",", ":", "\""}
-	for i := 0; i < len(stringReplace); i++ {
-		dataString = strings.Replace(dataString, stringReplace[i], "", -1)
-	}
-
-	keys := make([]string, 0, len(m))
-	for k, _ := range m {
-		keys = append(keys, k)
-	}
-	i := 0
-	for k, v := range keys {
-		if v == key {
-			i = k
-		}
-	}
 	var dataValue string
-	keyIndex := strings.Index(dataString, keys[i])
-	if i == len(keys)-1 {
-		dataValue = dataString[keyIndex+len(key):]
-		return dataValue
+	for _, v := range m {
+		str := fmt.Sprintf("%v", v)
+		dataValue += fmt.Sprintf("%s;", str)
 	}
-	endIndex := strings.Index(dataString, keys[i+1])
-	dataValue = dataString[keyIndex+len(key) : endIndex]
 	return dataValue
 }
 
 func MapToString(m map[string]interface{}) map[string]string {
 	dataType, _ := json.Marshal(m)
+	fmt.Println("json:: ", dataType)
 	dataString := string(dataType)
-	//json转string
-	//去掉 { } , : " 等符号，只保留键值连在一起的字符串
-	stringReplace := []string{"{", "}", ",", ":", "\""}
-	for i := 0; i < len(stringReplace); i++ {
-		dataString = strings.Replace(dataString, stringReplace[i], "", -1)
-	}
-	fmt.Println("srrtttttt: ", dataString)
+
+	fmt.Println("dataString: ", dataString)
 	//保存key值，以便后续组装
 	respMap := make(map[string]string)
-	keys := make([]string, 0, len(m))
-	for key, _ := range m {
-		keys = append(keys, key)
+	for k, v := range m {
+		str := fmt.Sprintf("%s", v)
+		respMap[k] = str
 	}
-	fmt.Println("{{{{{{key: ", keys)
 
-	//组装map
-	for i := 0; i < len(keys); i++ {
-		start := strings.Index(dataString, keys[i])
-		if i < len(keys)-1 {
-			endIndex := strings.Index(dataString, keys[i+1])
-			respMap[keys[i]] = dataString[start+len(keys[i]) : endIndex]
-			continue
-		}
-		respMap[keys[i]] = dataString[start+len(keys[i]):]
-	}
 	return respMap
 }
 
 func interfaceToString(value interface{}) string {
 	// interface 转 string
-	var key string
-	if value == nil {
-		return key
-	}
-
-	switch value.(type) {
-	case float64:
-		ft := value.(float64)
-		key = strconv.FormatFloat(ft, 'f', -1, 64)
-	case float32:
-		ft := value.(float32)
-		key = strconv.FormatFloat(float64(ft), 'f', -1, 64)
-	case int:
-		it := value.(int)
-		key = strconv.Itoa(it)
-	case uint:
-		it := value.(uint)
-		key = strconv.Itoa(int(it))
-	case int8:
-		it := value.(int8)
-		key = strconv.Itoa(int(it))
-	case uint8:
-		it := value.(uint8)
-		key = strconv.Itoa(int(it))
-	case int16:
-		it := value.(int16)
-		key = strconv.Itoa(int(it))
-	case uint16:
-		it := value.(uint16)
-		key = strconv.Itoa(int(it))
-	case int32:
-		it := value.(int32)
-		key = strconv.Itoa(int(it))
-	case uint32:
-		it := value.(uint32)
-		key = strconv.Itoa(int(it))
-	case int64:
-		it := value.(int64)
-		key = strconv.FormatInt(it, 10)
-	case uint64:
-		it := value.(uint64)
-		key = strconv.FormatUint(it, 10)
-	case string:
-		key = value.(string)
-	case []byte:
-		key = string(value.([]byte))
-	default:
-		newValue, _ := json.Marshal(value)
-		key = string(newValue)
-	}
-
-	return key
+	return fmt.Sprintf("%v", value)
 }
