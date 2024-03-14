@@ -11,7 +11,13 @@ import (
 )
 
 func (r *queryResolver) FindAll(ctx context.Context) ([]*model.StudentList, error) {
-	panic(fmt.Errorf("not implemented"))
+	student := &model.StudentList{
+		ID:   0,
+		Name: "aaa",
+		Sex:  model.SexMan,
+	}
+	students := []*model.StudentList{student}
+	return students, nil
 }
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
