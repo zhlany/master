@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"sort"
 )
 
@@ -10,6 +12,14 @@ func main() {
 		target := 7
 		fmt.Println(combinationSum(candidates, target))*/
 	fmt.Println(jump([]int{2, 0, 2, 1, 4}))
+}
+
+func demo(w http.ResponseWriter, r *http.Request) {
+	data := r.URL.Query().Get("data")
+	response := map[string]interface{}{
+		"data": data,
+	}
+	json.NewEncoder(w).Encode(response)
 }
 
 func jump(nums []int) (ans int) {

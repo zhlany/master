@@ -2,66 +2,71 @@ package main
 
 import (
 	"fmt"
-	"strings"
 )
 
-func findSubstring(s string, words []string) []int {
-	l := len(words)
-	ll := make([]int, 0)
-	list := make([]string, 0)
-
-	for i := 0; i < l; i++ {
-		list2 := words
-		for j := i; j < l; j++ {
-			if j != i {
-				list2[i], list2[j] = list2[j], list2[i]
+// 构建next数组
+// 核心：寻找最长的相同前后缀
+func buildNext(pattern string) []int {
+	m := len(pattern)
+	next := make([]int, m)
+	next[0] = 0
+	j := 0 // j指向前缀的末尾，同时表示当前公共前后缀长度
+	i := 1 // i指向后缀的末尾
+	for i < m {
+		if pattern[i] == pattern[j] {
+			j++         // 公共前后缀长度+1
+			next[i] = j // 更新next[i]
+			// 末尾向前移动一位，继续寻找
+			i++
+		} else {
+			if j > 0 {
+				j = next[j-1] // 回溯到前一个位置
+			} else {
+				next[i] = 0
+				i++
 			}
-			list = append(list, addlist(list2)...)
-			fmt.Println("i::", i, "----all::", list)
 		}
 	}
-	/*	list := make([]string, 0)
-		var str string
-		k := 0
-		for i := 0; i < l; i++ {
-			for j := 1; j < l; j++ {
-				str = words[i] + words[j]
-				list = append(list, str)
-				if j == l-1 {
-					k++
-				}
-			}
-			words[0], words[k] = words[k], words[0]
-		}*/
-	fmt.Println("list::", list)
-	for i := 0; i < len(list); i++ {
-		j := strings.Index(s, list[i])
-		fmt.Println("vvv2::", list[i])
-		ll = append(ll, j)
-	}
-	return ll
+	return next
 }
 
-func addlist(words []string) []string {
-	list := make([]string, 0)
-	var st string
-	for _, v := range words {
-		st += v
+// KMP KMP算法: 匹配模式串pattern在文本串text中的位置
+func KMP(text string, pattern string) int {
+	n := len(text)
+	m := len(pattern)
+	if m == 0 {
+		return 0
 	}
-	list = append(list, st)
-	for i := len(words) - 1; i > 1; i-- {
-		st = st[0:len(words[i])]
-		list = append(list, st)
+	// 构建next数组
+	next := buildNext(pattern)
+
+	i, j := 0, 0
+	for i < n {
+		if text[i] == pattern[j] {
+			i++
+			j++
+			if j == m {
+				return i - j // 匹配成功，返回起始位置
+			}
+		} else if j > 0 {
+			j = next[j-1] // 利用next数组跳过部分匹配
+		} else {
+			i++ // 第一个字符就失配，移动i
+		}
 	}
-	return list
+	return -1 // 未找到
 }
 
 func main() {
-	fmt.Println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-	str := "barfoothefoobarman"
-	arr := []string{"foo", "ba"}
-	//arr2 := []string{"foo", "bar"}
-	fmt.Println("i::", strings.Index(str, "barfoo"))
-	fmt.Println("s::", str)
-	fmt.Println(findSubstring(str, arr))
+	fmt.Println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	fmt.Println("KMP算法")
+
+	/*	pattern := "acacc"
+		next := buildNext(pattern)*/
+	ss := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	ss = append(ss[:2], ss[3:]...)
+	fmt.Println("next::", ss)
+	{
+		fmt.Println("KMP:", KMP("abcdabcd", "abcd"))
+	}
 }
